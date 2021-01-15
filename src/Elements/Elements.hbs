@@ -1,0 +1,166 @@
+{{#if parents}}
+  <ul {{{class 'parents'}}}>
+    {{#each parents}}
+      <li>
+        <div {{{class 'parent'}}} data-idx="{{idx}}">{{{text}}}</div>
+        <span {{{class 'icon-arrow-right'}}}></span>
+      </li>
+    {{/each}}
+  </ul>
+{{/if}}
+<div {{{class 'breadcrumb'}}}>
+  {{{name}}}
+</div>
+{{#if children}}
+  <ul {{{class 'children'}}}>
+    {{#each children}}
+      <li class="eruda-child {{#if isCmt}}eruda-green{{/if}} {{#if isEl}}eruda-active-effect{{/if}}" data-idx="{{idx}}">{{{text}}}</li>
+    {{/each}}
+  </ul>
+{{/if}}
+<div data-attrs {{{class 'attributes section'}}}>
+  <h2>
+    <span>Attributes</span>
+    <span data-add> + </span>
+  </h2>
+  <div {{{class 'table-wrapper'}}}>
+    <table>
+      <tbody>
+      {{#if attributes}}
+        {{#each attributes}}
+          <tr>
+            <td class="eruda-attribute-name-color">{{name}}</td>
+            <td class="eruda-string-color" data-edit="{{name}}">{{{value}}}</td>
+          </tr>
+        {{/each}}
+      {{else}}
+        <tr>
+          <td>Empty</td>
+        </tr>
+      {{/if}}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{#if styles}}
+  <div data-styles {{{class 'styles section'}}}>
+    <h2>Styles</h2>
+    <div {{{class 'style-wrapper'}}}>
+      {{#each styles}}
+        <div {{{class 'style-rules'}}}>
+          {{#if isKeyframes}}
+            <div {{{class 'media-text'}}}>
+              <span>@keyframes </span>{{name}} {
+            </div>
+            {{#each blocks}}
+              <div {{{class 'selector-text'}}}>
+                <span>{{keyText}} {</span>
+                <span data-add="{{@../index}}_{{@index}}">+</span>
+              </div>
+              {{#each style}}
+                <div {{{class 'rule'}}} data-editor="{{@../../index}}_{{@../index}}_{{@key}}">
+                  <span>{{@key}}</span>: <span data-value>{{{.}}};</span> 
+                </div>
+              {{/each}}
+              <div {{{class 'selector-text'}}}>}</div>
+            {{/each}}
+            <div>}</div>
+          {{else}}
+            {{#if media}}
+              <div {{{class 'media-text'}}}>
+                <span>@media </span>{{media}} {
+              </div>
+            {{/if}}
+            <div {{{class 'selector-text'}}}>
+              <span>{{selectorText}} {</span>
+              <span data-add="{{@index}}">+</span>
+            </div>
+            {{#each style}}
+              <div {{{class 'rule'}}} data-editor="{{@../index}}_{{@key}}">
+                <span>{{@key}}</span>: <span data-value>{{{.}}};</span> 
+              </div>
+            {{/each}}
+            <div {{{class 'selector-text'}}}>}</div>
+            {{#if media}}
+              <div>}</div>
+            {{/if}}
+          {{/if}}
+        </div>
+      {{/each}}
+    </div>
+  </div>
+{{/if}}
+{{#if computedStyle}}
+  <div {{{class 'computed-style section'}}}>
+    <h2>
+      Computed Style
+      {{#if rmDefComputedStyle}}
+        <div {{{class 'btn toggle-all-computed-style'}}}>
+          <span {{{class 'icon-compress'}}}></span>
+        </div>
+      {{else}}
+        <div {{{class 'btn toggle-all-computed-style'}}}>
+          <span {{{class 'icon-expand'}}}></span>
+        </div>
+      {{/if}}
+      <div {{{class 'btn computed-style-search'}}}>
+        <span {{{class 'icon-search'}}}></span>
+      </div>
+      {{#if computedStyleSearchKeyword}}
+        <div {{{class 'btn search-keyword'}}}>
+          {{computedStyleSearchKeyword}}
+        </div>
+      {{/if}}
+    </h2>
+    <div {{{class 'box-model'}}}>
+      {{#if boxModel.position}}<div {{{class 'position'}}}>
+        <div {{{class 'label'}}}>position</div><div {{{class 'top'}}}>{{boxModel.position.top}}</div><br><div {{{class 'left'}}}>{{boxModel.position.left}}</div>{{/if}}{{!
+        }}<div {{{class 'margin'}}}>
+          <div {{{class 'label'}}}>margin</div><div {{{class 'top'}}}>{{boxModel.margin.top}}</div><br><div {{{class 'left'}}}>{{boxModel.margin.left}}</div>{{!
+          }}<div {{{class 'border'}}}>
+            <div {{{class 'label'}}}>border</div><div {{{class 'top'}}}>{{boxModel.border.top}}</div><br><div {{{class 'left'}}}>{{boxModel.border.left}}</div>{{!
+            }}<div {{{class 'padding'}}}>
+              <div {{{class 'label'}}}>padding</div><div {{{class 'top'}}}>{{boxModel.padding.top}}</div><br><div {{{class 'left'}}}>{{boxModel.padding.left}}</div>{{!
+              }}<div {{{class 'content'}}}>
+                <span>{{boxModel.content.width}}</span>&nbsp;×&nbsp;<span>{{boxModel.content.height}}</span>
+              </div>{{!
+              }}<div {{{class 'right'}}}>{{boxModel.padding.right}}</div><br><div {{{class 'bottom'}}}>{{boxModel.padding.bottom}}</div>{{!
+              }}</div>{{!
+            }}<div {{{class 'right'}}}>{{boxModel.border.right}}</div><br><div {{{class 'bottom'}}}>{{boxModel.border.bottom}}</div>{{!
+          }}</div>{{!
+          }}<div {{{class 'right'}}}>{{boxModel.margin.right}}</div><br><div {{{class 'bottom'}}}>{{boxModel.margin.bottom}}</div>{{!
+        }}</div>{{!
+        }}{{#if boxModel.position}}<div {{{class 'right'}}}>{{boxModel.position.right}}</div><br><div {{{class 'bottom'}}}>{{boxModel.position.bottom}}</div>{{!
+      }}</div>{{/if}}
+    </div>
+    <div {{{class 'table-wrapper'}}}>
+      <table>
+        <tbody>
+        {{#each computedStyle}}
+          <tr>
+            <td {{{class 'key'}}}>{{@key}}</td>
+            <td>{{{.}}}</td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{{/if}}
+{{#if listeners}}
+  <div {{{class 'listeners section'}}}>
+    <h2>Event Listeners</h2>
+    <div {{{class 'listener-wrapper'}}}>
+      {{#each listeners}}
+         <div {{{class 'listener'}}}>
+           <div {{{class 'listener-type'}}}>{{@key}}</div>
+           <ul {{{class 'listener-content'}}}>
+             {{#each .}}
+               <li {{#if useCapture}}{{{class 'capture'}}}{{/if}}>{{listenerStr}}</li>
+             {{/each}}
+           </ul>
+         </div>
+      {{/each}}
+    </div>
+  </div>
+{{/if}}

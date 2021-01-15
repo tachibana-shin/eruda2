@@ -1,0 +1,59 @@
+@import 'variable';
+@import 'mixin';
+@import 'luna';
+
+.container {
+  pointer-events: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100000;
+  color: var(--foreground);
+  font-family: $font-family;
+  font-size: $font-size;
+  direction: ltr;
+  * {
+    box-sizing: border-box;
+    pointer-events: all;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: none;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.tag-name-color {
+  color: var(--tag-name-color);
+}
+
+.function-color {
+  color: var(--function-color);
+}
+
+.attribute-name-color {
+  color: var(--attribute-name-color);
+}
+
+.operator-color {
+  color: var(--operator-color);
+}
+
+.string-color {
+  color: var(--string-color);
+}

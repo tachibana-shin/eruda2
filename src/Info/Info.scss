@@ -1,0 +1,44 @@
+@import '../style/variable';
+@import '../style/mixin';
+
+#info {
+  @include overflow-auto(y);
+  li {
+    margin: 10px;
+    border: 1px solid var(--border);
+    .title,
+    .content {
+      padding: $padding;
+    }
+    .title {
+      padding-bottom: 0;
+      font-size: $font-size-l;
+      color: var(--accent);
+    }
+    .content {
+      margin: 0;
+      user-select: text;
+      color: var(--foreground);
+      word-break: break-all;
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        th,
+        td {
+          border: 1px solid var(--border);
+          padding: 10px;
+        }
+      }
+      * {
+        user-select: text;
+      }
+      a {
+        color: var(--link-color);
+      }
+    }
+    .device-key,
+    .system-key {
+      width: 100px;
+    }
+  }
+}

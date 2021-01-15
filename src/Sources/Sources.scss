@@ -1,0 +1,68 @@
+@import '../style/variable';
+@import '../style/mixin';
+
+#sources {
+  @include overflow-auto(y);
+  color: var(--foreground);
+  .code-wrapper,
+  .raw-wrapper {
+    @include overflow-auto(x);
+    width: 100%;
+    min-height: 100%;
+  }
+  .raw {
+    user-select: text;
+    padding: $padding;
+  }
+  .code {
+    font-size: $font-size-s;
+    .content * {
+      user-select: text;
+    }
+  }
+  pre.code {
+    padding: $padding;
+  }
+  table.code {
+    border-collapse: collapse;
+    .gutter {
+      background: var(--background);
+      color: var(--primary);
+    }
+    .line-num {
+      border-right: 1px solid var(--border);
+      padding: 0 3px 0 5px;
+      text-align: right;
+    }
+    .code-line {
+      padding: 0 4px;
+      white-space: pre;
+    }
+  }
+  .image {
+    .breadcrumb {
+      @include breadcrumb();
+    }
+    .img-container {
+      text-align: center;
+      img {
+        max-width: 100%;
+      }
+    }
+    .img-info {
+      text-align: center;
+      margin: 20px 0;
+      color: var(--foreground);
+    }
+  }
+  .json {
+    padding: 0 $padding;
+    * {
+      user-select: text;
+    }
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
+}

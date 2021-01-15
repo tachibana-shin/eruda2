@@ -1,0 +1,139 @@
+@import '../style/variable';
+@import '../style/mixin';
+
+#network {
+  padding-top: 36px;
+  .title {
+    @include absolute(100%, 36px);
+    @include right-btn();
+    background: var(--darker-background);
+    padding: $padding;
+    color: var(--primary);
+    height: 36px;
+    border-bottom: 1px solid var(--border);
+  }
+  .requests {
+    @include overflow-auto(y);
+    height: 100%;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+    li {
+      display: flex;
+      width: 100%;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      height: 41px;
+      color: var(--foreground);
+      white-space: nowrap;
+      &.error {
+        span {
+          color: var(--console-error-foreground);
+        }
+      }
+      span {
+        display: block;
+        line-height: 40px;
+        height: 40px;
+        padding: 0 5px;
+        font-size: $font-size-s;
+        vertical-align: top;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .name {
+        flex: 1;
+        padding-left: $padding;
+      }
+      .status {
+        width: 40px;
+      }
+      .method,
+      .type {
+        width: 50px;
+      }
+      .size {
+        width: 70px;
+      }
+      .time {
+        width: 60px;
+        padding-right: $padding;
+      }
+      &:nth-child(even) {
+        background: var(--contrast);
+      }
+    }
+  }
+  .detail {
+    @include absolute();
+    z-index: 10;
+    display: none;
+    padding-bottom: 40px;
+    background: var(--background);
+    .http {
+      @include overflow-auto(y);
+      height: 100%;
+      .breadcrumb {
+        @include breadcrumb();
+      }
+      .section {
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        h2 {
+          background: var(--darker-background);
+          color: var(--primary);
+          padding: $padding;
+          font-size: $font-size;
+        }
+        margin-bottom: 10px;
+        table {
+          color: var(--foreground);
+          * {
+            user-select: text;
+          }
+          td {
+            font-size: $font-size-s;
+            padding: 5px 10px;
+            word-break: break-all;
+          }
+          .key {
+            white-space: nowrap;
+            font-weight: bold;
+            color: var(--accent);
+          }
+        }
+      }
+      .response,
+      .data {
+        user-select: text;
+        @include overflow-auto(x);
+        padding: $padding;
+        font-size: $font-size-s;
+        margin-bottom: 10px;
+        white-space: pre-wrap;
+        border-top: 1px solid var(--border);
+        color: var(--foreground);
+        border-bottom: 1px solid var(--border);
+      }
+    }
+    .back {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      color: var(--foreground);
+      width: 100%;
+      border-top: 1px solid var(--border);
+      background: var(--darker-background);
+      display: block;
+      height: 40px;
+      line-height: 40px;
+      text-decoration: none;
+      text-align: center;
+      margin-top: 10px;
+      transition: background 0.3s;
+      cursor: pointer;
+      &:active {
+        color: var(--select-foreground);
+      }
+    }
+  }
+}

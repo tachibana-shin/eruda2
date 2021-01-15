@@ -1,0 +1,27 @@
+@import '../style/variable';
+@import '../style/mixin';
+
+.dev-tools {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  bottom: 0;
+  background: var(--background);
+  z-index: 500;
+  display: none;
+  padding-top: 40px !important;
+  opacity: 0;
+  transition: opacity $anim-duration, height $anim-duration;
+  .tools {
+    @include overflow-auto();
+    height: 100%;
+    width: 100%;
+    position: relative;
+    .tool {
+      @include absolute();
+      overflow: hidden;
+      display: none;
+    }
+  }
+}
