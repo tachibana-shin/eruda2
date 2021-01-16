@@ -98,13 +98,80 @@ function isMediaListContainsValue(mediaList, media)
 }
 
 export default class CssStore {
-  constructor(el) {
+  constructor(el, config) {
     this._el = el
+    this.config = config
   }
   getComputedStyle() {
     const computedStyle = window.getComputedStyle(this._el)
 
     return formatStyle(computedStyle)
+  }
+  getAnimations(cssRule, keyframes, ret) {
+    if (this.config.get('showKeyframes')) {
+      const animationName = cssRule.style.animationName.replace(/\s/g, '').split(',')
+
+      if (animationName.length > 0) {
+        animationName.forEach(animate => {
+          animate = animate.toLowerCase()
+          keyframes.forEach(keyframe => {
+            if (keyframe.name.toLowerCase() == animate) {
+              const blocks = []
+              let index = 0
+              let block
+              while ((block = keyframe[index++]) != null) {
+                blocks.push({
+                  keyText: block.keyText,
+                  style: formatStyle(block.style),
+                  styleRoot: block.style
+                })
+              }
+              ret.push({
+                name: keyframe.name,
+                blocks,
+                style: {},
+                isKeyframes: true
+              })
+            }
+          })
+        })
+      }
+    }
+  }
+  getCssRules(styleSheet, ret, keyframes, storesMedia, media) {
+    each(styleSheet.cssRules, (cssRule) => {
+
+      let matchesEl = false
+
+      if (cssRule.type == 4) {
+        const { media } = cssRule
+        if (isRuleFromMedia(cssRule, media)) {
+          if (storesMedia.indexOf(cssRule) == -1) {
+            this.getCssRules(cssRule, ret, keyframes, storesMedia, media)
+            storesMedia.push(cssRule)
+          }
+        }
+        return
+      }
+
+      // Mobile safari will throw DOM Exception 12 error, need to try catch it.
+      try {
+        matchesEl = this._elMatchesSel(cssRule.selectorText.replace(/::?(?:before|after)/i, ''))
+        // remove visual element in check selector
+        /* eslint-disable no-empty */
+      } catch (e) {}
+
+      if (!matchesEl) return
+
+      ret.push({
+        selectorText: cssRule.selectorText,
+        styleRoot: cssRule.style,
+        style: formatStyle(cssRule.style),
+        media
+      })
+      ///////////////////////
+      this.getAnimations(cssRule, keyframes, ret)
+    })
   }
   getMatchedCSSRules() {
     const ret = []
@@ -126,87 +193,15 @@ export default class CssStore {
       // })
       const keyframes = []
 
-      each(styleSheet.cssRules, rule => {
-        if ((rule.type === window.CSSRule.KEYFRAMES_RULE || rule.type === window.CSSRule.WEBKIT_KEYFRAMES_RULE)) {
-          keyframes.push(rule)
-        }
-      })
-
-      each(styleSheet.cssRules, (cssRule) => {
-
-        let matchesEl = false
-
-        if (cssRule.type == 4) {
-          const { media } = cssRule
-          if (isRuleFromMedia(cssRule, media)) {
-            each(cssRule.cssRules, (cssRule) => {
-              let matchesEl = false
-
-              try {
-                matchesEl = this._elMatchesSel(cssRule.selectorText.replace(/::?(?:before|after)/i, ''))
-                // remove visual element in check selector
-                /* eslint-disable no-empty */
-              } catch (e) {}
-
-              if (!matchesEl) return
-              if (storesMedia.indexOf(cssRule) == -1) {
-                ret.push({
-                  selectorText: cssRule.selectorText,
-                  media,
-                  styleRoot: cssRule.style,
-                  style: formatStyle(cssRule.style),
-                })
-                storesMedia.push(cssRule)
-              }
-            })
-
+      if (this.config.get('showKeyframes')) {
+        each(styleSheet.cssRules, rule => {
+          if ((rule.type === window.CSSRule.KEYFRAMES_RULE || rule.type === window.CSSRule.WEBKIT_KEYFRAMES_RULE)) {
+            keyframes.push(rule)
           }
-
-        }
-
-        // Mobile safari will throw DOM Exception 12 error, need to try catch it.
-        try {
-          matchesEl = this._elMatchesSel(cssRule.selectorText.replace(/::?(?:before|after)/i, ''))
-          // remove visual element in check selector
-          /* eslint-disable no-empty */
-        } catch (e) {}
-
-        if (!matchesEl) return
-
-        ret.push({
-          selectorText: cssRule.selectorText,
-          styleRoot: cssRule.style,
-          style: formatStyle(cssRule.style),
         })
-
-        const animationName = cssRule.style.animationName.replace(/\s/g, '').split(',')
-
-        if (animationName.length > 0) {
-          animationName.forEach(animate => {
-            animate = animate.toLowerCase()
-            keyframes.forEach(keyframe => {
-              if (keyframe.name.toLowerCase() == animate) {
-                const blocks = []
-                let index = 0
-                let block
-                while ((block = keyframe[index++]) != null) {
-                  blocks.push({
-                    keyText: block.keyText,
-                    style: formatStyle(block.style),
-                    styleRoot: block.style
-                  })
-                }
-                ret.push({
-                  name: keyframe.name,
-                  blocks,
-                  style: {},
-                  isKeyframes: true
-                })
-              }
-            })
-          })
-        }
-      })
+      }
+      
+      this.getCssRules(styleSheet, ret, keyframes, storesMedia)
     })
 
     return ret

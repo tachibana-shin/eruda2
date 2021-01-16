@@ -265,7 +265,7 @@ export default class Elements extends Tool {
   }
   _setEl(el) {
     this._curEl = el
-    this._curCssStore = new CssStore(el)
+    this._curCssStore = new CssStore(el, this.config)
     this._highlight.setEl(el)
     this._rmDefComputedStyle = true
 
@@ -371,7 +371,7 @@ export default class Elements extends Tool {
       const input = window.prompt('New attrbite: ')
       if (!input ? false : true) {
         const [key, val] = input.split(':')
-        this._curEl.setAttribute(key, val.replace(/^ /, ''))
+        this._curEl.setAttribute(key, (val || '').replace(/^ /, ''))
         this._render()
       }
     }
@@ -387,7 +387,7 @@ export default class Elements extends Tool {
         /*eslint no-extra-boolean-cast: 'error'*/
         if (!newVal ? false : true) {
           this._curEl.setAttribute(key, newVal)
-          $(item).text(newVal)
+          this._render()
         }
       }
       $(item).on('click', fn)
@@ -500,6 +500,7 @@ export default class Elements extends Tool {
     const cfg = (this.config = Settings.createCfg('elements', {
       overrideEventTarget: true,
       observeElement: true,
+      showKeyframes: true
     }))
 
     if (cfg.get('overrideEventTarget')) this.overrideEventTarget()
@@ -521,6 +522,7 @@ export default class Elements extends Tool {
     settings
       .text('Elements')
       .switch(cfg, 'overrideEventTarget', 'Catch Event Listeners')
+      .switch(cfg, 'showKeyframes', 'Show @keyframes')
 
     if (this._observer) settings.switch(cfg, 'observeElement', 'Auto Refresh')
 

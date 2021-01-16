@@ -2,6 +2,7 @@ import Tool from '../DevTools/Tool'
 import defInfo from './defInfo'
 import { each, isFn, isUndef, cloneDeep } from '../lib/util'
 import evalCss from '../lib/evalCss'
+import { $ } from '../lib/util'
 
 export default class Info extends Tool {
   constructor() {
@@ -87,9 +88,35 @@ export default class Info extends Tool {
 
     this._renderHtml(this._tpl({ infos }))
   }
+  setViewport(width) {
+    const meta = $('meta[name="viewport"]')[0]
+    if (meta) {
+      const content = meta.getAttribute('content')
+      meta.setAttribute('content', `width=${width}px, ${content.replace(/width ?= ?[^,]+,?/, '')}`)
+    } else {
+      $(document.head).append(`
+        <meta name="viewport" content="width = ${width}px; initial-scale=1, maximum-scale=1, user-scalable=no">
+      `)
+    }
+  }
+  events = []
   _renderHtml(html) {
+    this.events.forEach(item => {
+      $(item.el).off('click', item.fn)
+    })
+
     if (html === this._lastHtml) return
     this._lastHtml = html
     this._$el.html(html)
+    const el = this._$el.find('.eruda-change-device')
+    const $this = this
+
+    const fn = function() {
+      const width = $(this).attr('data-width')
+      $this.setViewport(width)
+    }
+
+    this.events.push({ el, fn })
+    el.on('click', fn)
   }
 }

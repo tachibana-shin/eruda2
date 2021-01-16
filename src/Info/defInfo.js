@@ -4,6 +4,19 @@ const browser = detectBrowser()
 
 export default [
   {
+    name: 'Screen Type',
+    val() {
+      return `
+        <button class="eruda-change-device" data-width="device-width"> Auto </button>
+        <button class="eruda-change-device" data-width="575"> (xs) </button>
+        <button class="eruda-change-device" data-width="576"> (sm) </button>
+        <button class="eruda-change-device" data-width="768"> (md) </button>
+        <button class="eruda-change-device" data-width="992"> (lg) </button>
+        <button class="eruda-change-device" data-width="1200"> (xl) </button>
+      `
+    }
+  },
+  {
     name: 'Location',
     val() {
       return escape(location.href)
@@ -36,8 +49,7 @@ export default [
   },
   {
     name: 'About',
-    val:
-      '<a href="https://github.com/liriliri/eruda" target="_blank">Eruda v' +
+    val: '<a href="https://github.com/liriliri/eruda" target="_blank">Eruda v' +
       VERSION +
       '</a>',
   },
