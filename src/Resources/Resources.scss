@@ -59,6 +59,13 @@
         height: 100px;
         font-size: 0;
       }
+      &.video {
+        width: 100%;
+        flex-grow: 0;
+        position: relative;
+        display: block;
+        padding-top: 100%;
+      }
       overflow-y: hidden;
       img {
         height: 100px;

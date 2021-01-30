@@ -28,10 +28,10 @@ Trace:
 
 npm manifest: 
   {
-    "name": "eruda",
-    "version": "2.4.1",
+    "name": "eruda2",
+    "version": "0.0.2-b5",
     "description": "Console for Mobile Browsers",
-    "main": "eruda.js",
+    "main": "./eruda.js",
     "scripts": {
       "ci": "npm run lint && npm run test && npm run build",
       "build": "webpack --config build/webpack.release.js && node build/build && lsla shx cp README.md dist",

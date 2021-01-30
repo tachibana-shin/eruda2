@@ -24,6 +24,32 @@ import { isErudaEl } from '../lib/extraUtil'
 import evalCss from '../lib/evalCss'
 import chobitsu from 'chobitsu'
 
+function getResource(name) {
+
+  const imageData = []
+
+  const performance = (this._performance =
+    window.webkitPerformance || window.performance)
+  if (performance && performance.getEntries) {
+    const entries = this._performance.getEntries()
+    entries.forEach((entry) => {
+      if (entry.initiatorType === name || isImg(entry.name)) {
+        imageData.push(entry.name)
+      }
+    })
+  } else {
+    $(name).each(function() {
+      const $this = $(this)
+      const src = $this.attr('src')
+      if ($this.attr('exclude') == 'true') {
+        return
+      }
+      imageData.push(src)
+    })
+  }
+
+  return unique(imageData).sort()
+}
 export default class Resources extends Tool {
   constructor() {
     super()
@@ -42,6 +68,8 @@ export default class Resources extends Tool {
     this._stylesheetData = []
     this._iframeData = []
     this._imageData = []
+    this._videoData = []
+    this._audioData = []
     this._observeElement = true
     this._tpl = require('./Resources.hbs')
   }
@@ -63,6 +91,8 @@ export default class Resources extends Tool {
       .refreshStylesheet()
       .refreshIframe()
       .refreshImage()
+      .refreshVideo()
+      .refreshAudio()
       ._render()
   }
   destroy() {
@@ -75,7 +105,7 @@ export default class Resources extends Tool {
   refreshScript() {
     let scriptData = []
 
-    $('script').each(function () {
+    $('script').each(function() {
       const src = this.src
 
       if (src !== '') scriptData.push(src)
@@ -90,7 +120,7 @@ export default class Resources extends Tool {
   refreshStylesheet() {
     let stylesheetData = []
 
-    $('link').each(function () {
+    $('link').each(function() {
       if (this.rel !== 'stylesheet') return
 
       stylesheetData.push(this.href)
@@ -105,7 +135,7 @@ export default class Resources extends Tool {
   refreshIframe() {
     let iframeData = []
 
-    $('iframe').each(function () {
+    $('iframe').each(function() {
       const $this = $(this)
       const src = $this.attr('src')
 
@@ -160,37 +190,23 @@ export default class Resources extends Tool {
       key: name,
       val: value,
     }))
-    
+
     this._cookieData = cookieData
 
     return this
   }
   refreshImage() {
-    let imageData = []
+    this._imageData = getResource.bind(this)('img')
 
-    const performance = (this._performance =
-      window.webkitPerformance || window.performance)
-    if (performance && performance.getEntries) {
-      const entries = this._performance.getEntries()
-      entries.forEach((entry) => {
-        if (entry.initiatorType === 'img' || isImg(entry.name)) {
-          imageData.push(entry.name)
-        }
-      })
-    } else {
-      $('img').each(function () {
-        const $this = $(this)
-        const src = $this.attr('src')
+    return this
+  }
+  refreshVideo() {
+    this._videoData = getResource.bind(this)('video')
 
-        if ($this.data('exclude') === 'true') return
-
-        imageData.push(src)
-      })
-    }
-
-    imageData = unique(imageData)
-    imageData.sort()
-    this._imageData = imageData
+    return this
+  }
+  refreshAudio() {
+    this._audioData = getResource.bind(this)('audio')
 
     return this
   }
@@ -239,7 +255,15 @@ export default class Resources extends Tool {
         container.notify('Refreshed')
         this.refreshImage()._render()
       })
-      .on('click', '.eruda-search', function () {
+      .on('click', '.eruda-refresh-video', () => {
+        container.notify('Refreshed')
+        this.refreshVideo()._render()
+      })
+      .on('click', '.eruda-refresh-audio', () => {
+        container.notify('Refreshed')
+        this.refreshAudio ()._render()
+      })
+      .on('click', '.eruda-search', function() {
         const $this = $(this)
         const type = $this.data('type')
         let filter = prompt('Filter')
@@ -258,7 +282,7 @@ export default class Resources extends Tool {
         }
         self._render()
       })
-      .on('click', '.eruda-delete-storage', function () {
+      .on('click', '.eruda-delete-storage', function() {
         const $this = $(this)
         const key = $this.data('key')
         const type = $this.data('type')
@@ -271,13 +295,13 @@ export default class Resources extends Tool {
           self.refreshSessionStorage()._render()
         }
       })
-      .on('click', '.eruda-delete-cookie', function () {
+      .on('click', '.eruda-delete-cookie', function() {
         const key = $(this).data('key')
 
         chobitsu.domain('Network').deleteCookies({ name: key })
         self.refreshCookie()._render()
       })
-      .on('click', '.eruda-clear-storage', function () {
+      .on('click', '.eruda-clear-storage', function() {
         const type = $(this).data('type')
 
         if (type === 'local') {
@@ -296,15 +320,15 @@ export default class Resources extends Tool {
         })
         this.refreshCookie()._render()
       })
-      .on('click', '.eruda-storage-val', function () {
+      .on('click', '.eruda-storage-val', function() {
         const $this = $(this)
         const key = $this.data('key')
         const type = $this.data('type')
 
         const val =
-          type === 'local'
-            ? localStorage.getItem(key)
-            : sessionStorage.getItem(key)
+          type === 'local' ?
+          localStorage.getItem(key) :
+          sessionStorage.getItem(key)
 
         try {
           showSources('object', JSON.parse(val))
@@ -312,7 +336,7 @@ export default class Resources extends Tool {
           showSources('raw', val)
         }
       })
-      .on('click', '.eruda-img-link', function () {
+      .on('click', '.eruda-img-link', function() {
         const src = $(this).attr('src')
 
         showSources('img', src)
@@ -335,7 +359,7 @@ export default class Resources extends Tool {
     }
 
     function linkFactory(type) {
-      return function (e) {
+      return function(e) {
         if (!container.get('sources')) return
         e.preventDefault()
 
@@ -399,6 +423,8 @@ export default class Resources extends Tool {
     const scriptData = this._scriptData
     const stylesheetData = this._stylesheetData
     const imageData = this._imageData
+    const videoData = this._videoData
+    const audioData = this._audioData
 
     const localStoreSearchKeyword = this._localStoreSearchKeyword
     const sessionStoreSearchKeyword = this._sessionStoreSearchKeyword
@@ -437,6 +463,8 @@ export default class Resources extends Tool {
         stylesheetState: getState('stylesheet', stylesheetData.length),
         iframeData: this._iframeData,
         imageData,
+        videoData,
+        audioData,
         imageState: getState('image', imageData.length),
       })
     )

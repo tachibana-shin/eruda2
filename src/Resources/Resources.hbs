@@ -182,3 +182,42 @@
     {{/if}}
   </ul>
 </div>
+<div {{{class 'section image video'}}}>
+  <h2 {{{class 'title'}}}>
+    Video
+    <div {{{class 'btn refresh-video'}}}>
+      <span {{{class 'icon-refresh'}}}></span>
+    </div>
+  </h2>
+  <ul {{{class 'image-list'}}}>
+    {{#if videoData}}
+      {{#each videoData}}
+        <li {{{class 'video'}}}>
+          <video controls src="{{this}}" data-exclude="true" {{{class 'img-link'}}}/>
+        </li>
+      {{/each}}
+    {{else}}
+      <li>Empty</li>
+    {{/if}}
+  </ul>
+</div>
+ <div {{{class 'section image'}}}>
+  <h2 {{{class 'title'}}}>
+    Audio
+    <div {{{class 'btn refresh-audio'}}}>
+      <span {{{class 'icon-refresh'}}}></span>
+    </div>
+  </h2>
+  <ul {{{class 'image-list'}}}>
+    {{#if audioData}}
+      {{#each audioData}}
+        <li {{{class 'audio'}}}>
+          <audio controls src="{{this}}" data-exclude="true" {{{class 'img-link'}}}/>
+        </li>
+      {{/each}}
+    {{else}}
+      <li>Empty</li>
+    {{/if}}
+  </ul>
+</div>
+ 
