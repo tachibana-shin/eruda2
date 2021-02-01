@@ -1,3 +1,4 @@
 src/lib/util.js
 test/util.js
-dist/eruda.js
+eruda.js
+eruda.min.js
