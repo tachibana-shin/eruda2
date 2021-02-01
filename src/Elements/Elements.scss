@@ -2,8 +2,8 @@
 @import '../style/mixin';
 
 #elements {
-  * {
-    user-select: text;
+  &, * {
+    user-select: text !important;
   }
 
   padding-bottom: 40px;

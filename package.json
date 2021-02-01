@@ -1,8 +1,8 @@
 {
   "name": "eruda2",
-  "version": "0.0.2-b5",
+  "version": "0.0.2-b6",
   "description": "Console for Mobile Browsers",
-  "main": "./eruda.js",
+  "main": "./dist/eruda.js",
   "scripts": {
     "ci": "npm run lint && npm run test && npm run build",
     "build": "webpack --config build/webpack.release.js && node build/build && lsla shx cp README.md dist",

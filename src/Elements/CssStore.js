@@ -156,7 +156,7 @@ export default class CssStore {
 
       // Mobile safari will throw DOM Exception 12 error, need to try catch it.
       try {
-        matchesEl = this._elMatchesSel(cssRule.selectorText.replace(/::?(?:before|after)/i, ''))
+        matchesEl = this._elMatchesSel(cssRule.selectorText.replace(/::?(?:\w+)/i, ''))
         // remove visual element in check selector
         /* eslint-disable no-empty */
       } catch (e) {}
